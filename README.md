@@ -57,8 +57,8 @@ The `preprocessors` or `formatters` field in the Files Array can be a list of
 * Object of the form `{type: "component name", ... params ...}`
 * String containing the component name. This is shortcut for case where only the type is required.
 
-The params, depend on each component. The default value for `preprocessors` is `"yafm"` and for 
-`formatters` is `"swig"`, thus in the absence of any configuration jstatic preprocesses the files
+The params, varies from component to component. The default value for `preprocessors` is `"yafm"` and for 
+`formatters` is `"swig"`, thus in the absence of any configuration, jstatic preprocesses the files
 through yafm (YAml Front Matter Processor) and formats it with swig (templating engine).
 
 eg:
