@@ -1,6 +1,6 @@
 # jstatic
 
-> A simle, easily extensible, static documents generation task for Grunt.
+> A simple, easily extensible, static documents generation task for Grunt.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
