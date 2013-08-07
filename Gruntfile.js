@@ -28,27 +28,6 @@ module.exports = function(grunt) {
       tests: ['testtmp'],
     },
 
-    // Configuration to be run (and then tested).
-    jstatic: {
-      options: {
-        linkPrefix: "http://azeemarshad.in/",
-        swig: {
-            root: ["./", "azeemarshad.in/templates"],
-            layout: "default.html"
-        }
-      },
-      site: {
-        files: [
-            {src: ['azeemarshad.in/content/*.html'], dest: "testtmp"},
-            {src: ['azeemarshad.in/content/*.md'],   dest: "testtmp", formatters: ["markdown", "swig"]},
-
-            {src: ['azeemarshad.in/content/posts/*.html'], dest: "testtmp/posts"},
-            {src: ['azeemarshad.in/content/posts/*.md'],   dest: "testtmp/posts", 
-             formatters: ["markdown", {type: "swig", layout: "posts.html"}] }
-        ],
-      }
-    },
-
     // Unit tests.
     nodeunit: {
       tests: ['test/*_test.js'],
@@ -63,7 +42,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-nodeunit');
-  grunt.loadNpmTasks('grunt-devtools');
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.

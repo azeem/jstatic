@@ -50,9 +50,11 @@ module.exports = function(grunt) {
     grunt.log.subhead("Initializing");
     var fmtInst = jstatic.buildInstances(faEntries, "formatters", options);
     var ppInst = jstatic.buildInstances(faEntries, "preprocessors", options);
+    var extraContexts = jstatic.readExtraContexts(options);
 
     grunt.log.subhead("Preprocessing");
     _.each(faEntries, function(entry) {
+        var newSrcFiles = [];
         for(var i = 0;i < entry.srcFiles.length;i++) {
             var filePath = entry.srcFiles[i];
             var ext = path.extname(filePath);
@@ -71,19 +73,27 @@ module.exports = function(grunt) {
                 destPath: destPath,
                 ext: ext,
                 basename: basename,
-                link: link
+                link: link,
+                published: true
             };
             var fileContent = grunt.file.read(filePath);
             for(var j in entry.fileOptions.preprocessors) {
                 var conf = entry.fileOptions.preprocessors[j];
                 fileContent = ppInst[conf.type].preprocess(fileContent, context, conf);
             }
-            entry.srcFiles[i] = {
+
+            // skip unpublished files
+            if(!context.published) {
+                continue;
+            }
+
+            newSrcFiles.push({
                 content: fileContent,
                 context: context
-            };
+            });
             grunt.log.oklns(filePath);
         }
+        entry.srcFiles = newSrcFiles;
     });
 
     var fileContexts = _.chain(faEntries).map(function(entry) {
@@ -98,7 +108,7 @@ module.exports = function(grunt) {
         // for all the source files in the files array entry
         _.each(entry.srcFiles, function(srcFile) {
             // format the filecontent
-            var finalContext = _.extend({fileContexts:fileContexts}, srcFile.context);
+            var finalContext = _.extend({fileContexts:fileContexts}, extraContexts, srcFile.context);
             var fileContent = srcFile.content;
             _.each(entry.fileOptions.formatters, function(conf){
                 fileContent = fmtInst[conf.type].format(fileContent, finalContext, conf);
