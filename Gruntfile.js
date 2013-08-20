@@ -33,6 +33,24 @@ module.exports = function(grunt) {
       tests: ['test/*_test.js'],
     },
 
+    jstatic: {
+        site: {
+            options: {
+                swig: {
+                    root: "test/src/templates",
+                    layout: "test/src/templates/default.html"
+                }
+            },
+            files: [
+                {
+                    name: "simple-defaults",
+                    src: "test/src/content/index.html",
+                    dest: "testtmp"
+                }
+            ]
+        }
+    }
+
   });
 
   // Actually load this plugin's task(s).
