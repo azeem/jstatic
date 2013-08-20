@@ -37,15 +37,45 @@ module.exports = function(grunt) {
         site: {
             options: {
                 swig: {
-                    root: "test/src/templates",
-                    layout: "test/src/templates/default.html"
+                    root: "test/templates",
+                    layout: "test/templates/layout1.html"
+                },
+                permalink: {
+                    linkPrefix: "http://github.com/azeem/jstatic/",
                 }
             },
             files: [
                 {
                     name: "simple-defaults",
-                    src: "test/src/content/index.html",
+                    src: "test/content/simple-defaults.html",
                     dest: "testtmp"
+                },
+                {
+                    name: "layout-override",
+                    src: "test/content/layout-override.html",
+                    dest: "testtmp",
+                    generators: [
+                        {type: "swig", layout: "test/templates/layout2.html"}
+                    ]
+                },
+                {
+                    name: "yafm-test",
+                    src: "test/content/yafm-test.html",
+                    dest: "testtmp",
+                    generators: ["yafm", "swig"]
+                },
+                {
+                    name: "markdown_test",
+                    src: "test/content/md/*.md",
+                    dest: "testtmp/md",
+                    generators: ["yafm", "permalink", "markdown", "swig"]
+                },
+                {
+                    name: "depends-test",
+                    src: "test/content/md/depends.html",
+                    dest: "testtmp/md",
+                    depends: ["markdown_test"],
+                    generators: ["yafm", "permalink", "swig"]
                 }
             ]
         }
