@@ -37,8 +37,8 @@ module.exports = function(grunt) {
         site: {
             options: {
                 swig: {
-                    root: "test/templates",
-                    layout: "test/templates/layout1.html"
+                    root: "test/cases/templates",
+                    layout: "test/cases/templates/layout1.html"
                 },
                 permalink: {
                     linkPrefix: "http://github.com/azeem/jstatic/",
@@ -47,32 +47,32 @@ module.exports = function(grunt) {
             files: [
                 {
                     name: "simple-defaults",
-                    src: "test/content/simple-defaults.html",
+                    src: "test/cases/content/simple-defaults.html",
                     dest: "testtmp"
                 },
                 {
                     name: "layout-override",
-                    src: "test/content/layout-override.html",
+                    src: "test/cases/content/layout-override.html",
                     dest: "testtmp",
                     generators: [
-                        {type: "swig", layout: "test/templates/layout2.html"}
+                        {type: "swig", layout: "test/cases/templates/layout2.html"}
                     ]
                 },
                 {
                     name: "yafm-test",
-                    src: "test/content/yafm-test.html",
+                    src: "test/cases/content/yafm-test.html",
                     dest: "testtmp",
                     generators: ["yafm", "swig"]
                 },
                 {
                     name: "markdown_test",
-                    src: "test/content/md/*.md",
+                    src: "test/cases/content/md/*.md",
                     dest: "testtmp/md",
                     generators: ["yafm", "permalink", "markdown", "swig"]
                 },
                 {
                     name: "depends-test",
-                    src: "test/content/md/depends.html",
+                    src: "test/cases/content/md/depends.html",
                     dest: "testtmp/md",
                     depends: ["markdown_test"],
                     generators: ["yafm", "permalink", "swig"]
@@ -93,7 +93,7 @@ module.exports = function(grunt) {
 
   // Whenever the "test" task is run, first clean the "tmp" dir, then run this
   // plugin's task(s), then test the result.
-  grunt.registerTask('test', ['clean', 'jstatic']);
+  grunt.registerTask('test', ['clean', 'jstatic', "nodeunit"]);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
