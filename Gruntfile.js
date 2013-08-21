@@ -46,7 +46,6 @@ module.exports = function(grunt) {
             },
             files: [
                 {
-                    name: "simple-defaults",
                     src: "test/cases/content/simple-defaults.html",
                     dest: "testtmp"
                 },
