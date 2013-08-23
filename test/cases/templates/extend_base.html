@@ -1,0 +1,11 @@
+<html>
+<body>
+<h1>Template:extend_base.html</h1>
+{% if title %}<h3>title:{{ title }}</h3>{% endif %}
+<h3>body:</h3>
+<div style="border: 1px solid black">
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+</html>

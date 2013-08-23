@@ -37,7 +37,7 @@ module.exports = function(grunt) {
         site: {
             options: {
                 swig: {
-                    root: "test/cases/templates",
+                    root: ["test/cases/templates"],
                     layout: "test/cases/templates/layout1.html"
                 },
                 permalink: {
@@ -75,6 +75,11 @@ module.exports = function(grunt) {
                     dest: "testtmp/md",
                     depends: ["markdown_test"],
                     generators: ["yafm", "permalink", "swig"]
+                },
+                {
+                    name: "extend_test",
+                    src: "test/cases/content/extend_test.html",
+                    dest: "testtmp"
                 }
             ]
         }
