@@ -1,5 +1,1 @@
-<ul>
-{% for file in markdown_test %}
-<li><a href="{{ file.permalink }}">{{ file.title }}</a></li>
-{% endfor %}
-</ul>
+{% for file in markdown_test %}{{ file.permalink }}:{{ file.title }} {% endfor %}

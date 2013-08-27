@@ -64,6 +64,18 @@ module.exports = function(grunt) {
                     generators: ["yafm", "swig"]
                 },
                 {
+                    name: "yafm_split_test",
+                    src: "test/cases/content/yafm_split_test.html",
+                    dest: "testtmp",
+                    generators: [
+                        {
+                            type: "yafm",
+                            multi: true
+                        },
+                        "swig"
+                    ]
+                },
+                {
                     name: "markdown_test",
                     src: "test/cases/content/md/*.md",
                     dest: "testtmp/md",
@@ -80,6 +92,19 @@ module.exports = function(grunt) {
                     name: "extend_test",
                     src: "test/cases/content/extend_test.html",
                     dest: "testtmp"
+                },
+                {
+                    name: "destination_test",
+                    src: "test/cases/content/destination_test.html",
+                    dest: "testtmp",
+                    generators: [
+                        "yafm",
+                        {
+                            type: "destination",
+                            dest: "$(path)$(sep)$(slug)_$(uid).$(outExt)"
+                        },
+                        "swig"
+                    ]
                 }
             ]
         }

@@ -1,8 +1,1 @@
-<html>
-<body>
-<h1>Template:layout1.html</h1>
-{% if title %}<h3>title:{{ title }}</h3>{% endif %}
-<h3>body:</h3>
-<div style="border: 1px solid black">{{ body|raw }}</div>
-</body>
-</html>
+Layout:layout1.html {% if title %}title:{{ title }}{% endif %} #{{ body|raw }}

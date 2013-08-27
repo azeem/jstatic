@@ -8,15 +8,15 @@ module.exports = (function() {
 
     return {
         checkfiles: function(test) {
-            var files = _.filter(grunt.file.expand(path.join(destBase, "**/*")), function(file) {
+            var expectedFiles = _.filter(grunt.file.expand(path.join(expectBase, "**/*")), function(file) {
                 return grunt.file.isFile(file);
             });
-            test.expect(files.length);
-            _.each(files, function(file) {
-                var expectFilePath = path.join(expectBase, file.substring(destBase.length));
-                var contents = grunt.file.read(file);
-                var expect = grunt.file.read(expectFilePath);
-                test.ok(contents === expect, file + " should match with expected file");
+            test.expect(expectedFiles.length);
+            _.each(expectedFiles, function(expectFilePath) {
+                var genFilePath = path.join(destBase, expectFilePath.substring(expectBase.length));
+                var genContent = _.trim(grunt.file.read(genFilePath));
+                var expectContent = _.trim(grunt.file.read(expectFilePath));
+                test.ok(genContent === expectContent, expectFilePath + " should match generated file");
             });
             test.done();
         },
