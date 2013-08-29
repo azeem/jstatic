@@ -105,6 +105,28 @@ module.exports = function(grunt) {
                         },
                         "swig"
                     ]
+                },
+                {
+                    name: "paginator_test",
+                    src: "test/cases/content/paginator_test.html",
+                    dest: "testtmp",
+                    depends: ["markdown_test"],
+                    generators: [
+                        {type:"paginator", pivot: "markdown_test", pageSize: 2},
+                        "swig"
+                    ]
+                },
+                {
+                    name: "sequencer_test",
+                    src: "test/cases/content/sequencer_test.html",
+                    dest: "testtmp",
+                    depends: ["markdown_test"],
+                    generators: [
+                        {type:"paginator", pivot: "markdown_test", pageSize: 2},
+                        "permalink",
+                        "sequencer",
+                        "swig"
+                    ]
                 }
             ]
         }
