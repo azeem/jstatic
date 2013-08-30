@@ -1,7 +1,7 @@
 {
   "name": "jstatic",
   "description": "A simple, easily extensible, static documents generation task for Grunt.",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "homepage": "https://github.com/azeem/jstatic",
   "author": {
     "name": "azeem",
