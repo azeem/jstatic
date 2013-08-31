@@ -44,7 +44,7 @@ is treated as a separate conversion Flow. During each flow, file details are rea
 * `destPath` - the path where the file will be written to at the end of this flow.
 * `content` - the file contents
 
-This dictionary is then passed sequentially through a series of generators (which modify/add items int the dictionary etc.). The resulting data is then written at the destination.
+This dictionary is then passed sequentially through a series of generators (which modify/add items in the dictionary etc.). The resulting data is then written at the destination.
 
 ### Configuring jstatic
 The minimum configuration required is a [Files Array][1] for each target, specifying the source files and destination.
@@ -93,7 +93,7 @@ eg:
   });
 ```
 
-# Options
+### Options
 
 The following global, or per-task options can be used with jstatic
 
