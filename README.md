@@ -36,16 +36,20 @@ grunt.initConfig({
 ```
 
 jstatic converts files using a very simple algorithm. Every [Files Array][1] entry
-is treated as a separate conversion Flow. During each flow, file details are read into a dictionary.
-This dictionary is then passed sequentially through a series of generators (which modify/add items 
-int the dictionary etc.). The resulting data is then written at the destination.
+is treated as a separate conversion Flow. During each flow, file details are read into a dictionary with the following properties.
+
+* `srcPath` - the source path of the file
+* `basename` - the name part of the file
+* `ext` - the extension of the source file
+* `destPath` - the path where the file will be written to at the end of this flow.
+* `content` - the file contents
+
+This dictionary is then passed sequentially through a series of generators (which modify/add items int the dictionary etc.). The resulting data is then written at the destination.
 
 ### Configuring jstatic
-The minimum configuration required is a [Files Array][1] for each target, specifying the 
-source files and destination.
+The minimum configuration required is a [Files Array][1] for each target, specifying the source files and destination.
 
-Each [File Array][1] entry can contain additional properties that determine the conversion.
-The following file array properties are valid.
+Each [File Array][1] entry can contain additional properties that determine the conversion. The following file array properties are valid.
 
 + All standard [File Array][1] properties.
 + `name` String (default: generated): 
@@ -120,8 +124,7 @@ Additionally fields in the global `extraContext` is also available.
 
 ### Params
 
-+ `layout` String (defualt: undefined) - If provided, then after rendering an input file, the rendered
-                                         contents is passed as a variable `body` to the layout file.
++ `layout` String (defualt: undefined) - If provided, then after rendering an input file, the rendered contents is passed as a variable `body` to the layout file.
 
 you can also include any [swig initialization options][2] to initialize the swig library.
 
@@ -147,14 +150,47 @@ field in the file dictionary.
     This many path elements are stripped off from the beginning 
     of a file's destination path, before building the link.
 
+## paginator
+
+This generator clones each file in the current flow based on the length of a dependency result. It generates as many clones as the number of pages required to accomodate the length. The following properties are inserted into each file entry
+
+* `page` - 1 indexed page number of the clone
+* `pageCount` - the total number of pages
+* `pageSize` - the size of each page
+
+### Params
+* `pivot` String - name of the dependency whose length will be used to compute the number of pages
+* `pageSize` Number (default: 5) - number of items per page.
+
+## sequencer
+
+sequencer adds next, previous and whole sequence references to each file entry. This can be used for building navigation between items in a flow. The following properties are inserted into each file entry
+
+* `prev` - reference to the previous file entry in this flow
+* `next` - reference to the next file entry in this flow
+* `sequence` - reference to an array of all file entries in this flow
+
+## destination
+
+destination allows the user to modify the destination filename and location.
+
+### Params
+* `dest` String|function - A template string or a function that returns the filename
+
+A template string can contain interpolated file entry properties eg: `"hello$(sep)$(basename)_$(page)$(outExt)"`.
+
+The function should be of the form `function (entry, outExt, sep, dest)` where the parameters are
+
+* `entry` - the file entry
+* `outExt` - the output file extension
+* `sep` - the path separator character
+* `dest` - the flow destination directory
+
 # Common Tasks
 
 ## Generating Collection Pages
 
-During each conversion, an array of final file dictionaries of all dependencies are passed 
-in a `depends` parameter to the generators. The swig generator makes this parameter available
-inside the template, thus allowing us to generate collection summary pages, like blog
-home pages, archive pages, tag/category pages etc..
+During each conversion, an array of final file dictionaries of all dependencies are passed in a `depends` parameter to the generators. The swig generator makes this parameter available inside the template, thus allowing us to generate collection summary pages, like blog home pages, archive pages, tag/category pages etc..
 
 Eg: 
 If we configure the files array
@@ -187,6 +223,63 @@ then index.html can generate list of posts like so
         <li>{{file.publishTime|date("d M Y")}} <a href="{{file.permalink}}">{{file.title}}</a></li>
     {% endfor %}
 </ul>
+```
+
+## Pagination
+
+Pagination can be done using the paginator. In the previous example if we want to paginate the index.html file by the entries in the "blog_flow", we simply add a paginator
+
+```js
+generators: [
+  {type: "paginator", pivot: "blog_flow", pageSize: 5},
+  "swig"
+]
+```
+
+The index.html file can be modified to generate only the contents for the current page.
+
+```html
+<ul>
+    {% for file in blog_flow|sortBy("publishTime")|reverse|pageSlice(page, pageSize) %}
+        <li>{{file.publishTime|date("d M Y")}} <a href="{{file.permalink}}">{{file.title}}</a></li>
+    {% endfor %}
+</ul>
+```
+
+This will generate index1.html, index2.html etc. one for each page. Also check the sequencer on how to create page navigation.
+
+## Writing Custom Generators
+
+Generators can be registered using the `jstatic.registerGenerator` function
+
+```js
+jstatic.registerGenerator("myGenerator", function(iter, params, flow, depends) {
+    ...
+    return newIter;
+});
+```
+
+where the parameters are
+
+* `iter` - This is an iterator from the previous generator. calling `iter()` once will return one file entry. An `undefined` response indicates the end of the sequence.
+* `params` - This dictionary contains paramters for the generator. This is a merge of the files array entry and the global options for this generator.
+* `flow` - A reference to the flow object.
+* `depends` - A dictionary containing the results of all the dependencies of this flow.
+
+Each generator should return an iterator that generates its output.
+
+eg: The following generator adds the length of the title into the file entry
+
+```js
+jstatic.registerGenerator("myGenerator", function(iter, params, flow, depends) {    
+    return function() {
+        var entry = iter();
+        if(!entry) return;
+        entry.titleLength = entry.title.length;
+        return entry;
+    };
+});
+
 ```
 
 [1]: http://gruntjs.com/configuring-tasks#files-array-format
