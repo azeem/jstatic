@@ -20,7 +20,7 @@ grunt.loadNpmTasks('jstatic');
 ## The "jstatic" task
 
 ### Overview
-In your project's Gruntfile, add a section named `jstatic` to the data object passed into `grunt.initConfig()`.
+Read [jstatic - Flexible static site generation](http://azeemarshad.in/posts/introducing_jstatic.html) for an introduction to jstatic concepts. In your project's Gruntfile, add a section named `jstatic` to the data object passed into `grunt.initConfig()`.
 
 ```js
 grunt.initConfig({
