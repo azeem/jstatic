@@ -117,6 +117,23 @@ module.exports = function(grunt) {
                     ]
                 },
                 {
+                    name: "paginator_pageby_test",
+                    src: "test/cases/content/paginator_test.html",
+                    dest: "testtmp",
+                    depends: ["markdown_test"],
+                    generators: [
+                        {
+                            type:"paginator", 
+                            pivot: "markdown_test", 
+                            pageBy: function(entry) {
+                                var months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+                                return months[entry.publishTime.getMonth()];
+                            }
+                        },
+                        "swig"
+                    ]
+                },
+                {
                     name: "sequencer_test",
                     src: "test/cases/content/sequencer_test.html",
                     dest: "testtmp",
@@ -125,6 +142,21 @@ module.exports = function(grunt) {
                         {type:"paginator", pivot: "markdown_test", pageSize: 2},
                         "permalink",
                         "sequencer",
+                        "swig"
+                    ]
+                },
+                {
+                    name: "permalink_test",
+                    src: "test/cases/content/permalink_test.html",
+                    dest: "testtmp",
+                    generators: [
+                        "yafm",
+                        {
+                            type: "permalink",
+                            func: function(entry, prefix, pathElems, outExt) {
+                                return prefix + pathElems.slice(0,-1).join("/") + entry.basename + entry.variable + outExt;
+                            }
+                        },
                         "swig"
                     ]
                 }
