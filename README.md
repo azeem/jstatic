@@ -155,12 +155,14 @@ field in the file dictionary.
 This generator clones each file in the current flow based on the length of a dependency result. It generates as many clones as the number of pages required to accomodate the length. The following properties are inserted into each file entry
 
 * `page` - 1 indexed page number of the clone
+* `pageItems` - the Entries in the current page
 * `pageCount` - the total number of pages
-* `pageSize` - the size of each page
+* `pageSize` - the size of each page.
 
 ### Params
 * `pivot` String - name of the dependency whose length will be used to compute the number of pages
 * `pageSize` Number (default: 5) - number of items per page.
+* `pageBy` Fuction (default: `function(entry,index){return Math.floor(index/pageSize)+1;}`) - a function that identifies the page that an entry in the pivot belongs to. paginator groups entries into pages based this result.
 
 ## sequencer
 
