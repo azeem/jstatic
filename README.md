@@ -139,10 +139,21 @@ field in the file dictionary.
 
 ## permalink
 
-This generator generates a URL from the file destination path and adds it as a `permalink` 
-field in the file dictionary.
+This generator generates a URL from the file destination path and adds it as a `permalink` field in the file dictionary.
 
 ### Params
+
+* `link` String|Function (default: `function(entry, prefix, pathElems){return prefix + pathElems.join("/");}`): A template string or a function that returns the link.
+
+    A template string can contain interpolated file entry properties eg: `"hello$(sep)$(basename)_$(page)$(outExt)"`.
+    
+    The function should be of the form `function (entry, prefix, pathElems, outExt, dest)` where the parameters are
+    
+    + `entry` - the file entry
+    + `prefix` - the linkPrefix
+    + `pathElems` - array of items in the link path
+    + `outExt` - the output file extension
+    + `dest` - the flow destination directory
 
 * `linkPrefix` String (default: "/"): 
     This string is prefixed to the link field in a page's context.
@@ -154,7 +165,7 @@ field in the file dictionary.
 
 This generator clones each file in the current flow based on the length of a dependency result. It generates as many clones as the number of pages required to accomodate the length. The following properties are inserted into each file entry
 
-* `page` - 1 indexed page number of the clone
+* `page` - The page object for this page. This is the value returned by the pageBy function for this entry.
 * `pageItems` - the Entries in the current page
 * `pageCount` - the total number of pages
 * `pageSize` - the size of each page.
@@ -242,13 +253,29 @@ The index.html file can be modified to generate only the contents for the curren
 
 ```html
 <ul>
-    {% for file in blog_flow|sortBy("publishTime")|reverse|pageSlice(page, pageSize) %}
+    {% for file in pageItems|sortBy("publishTime")|reverse %}
         <li>{{file.publishTime|date("d M Y")}} <a href="{{file.permalink}}">{{file.title}}</a></li>
     {% endfor %}
 </ul>
 ```
 
-This will generate index1.html, index2.html etc. one for each page. Also check the sequencer on how to create page navigation.
+This will generate index1.html, index2.html etc. one for each page. Check the destination generator for changing file names. Also check the sequencer on how to create page navigation.
+
+The paginator also accepts an optional `pageBy` parameter. This is a function that identifies the page that each entry in the pivot belongs to. The default functionality of pageBy is to identifiy page based on the index, but this can be overriden to create any kind of pagination behaviour.
+
+Eg: The following paginator will page the entries by the month and year
+```js
+{
+    type:"paginator", 
+    pivot: "items", 
+    pageBy: function(entry) {
+        var time = entry.publishTime;
+        return new Date(time.getFullYear(), time.getMonth());
+    }
+}
+```
+
+Note that the page can be any type, in the above example, the page is a Date object
 
 ## Writing Custom Generators
 
@@ -284,6 +311,15 @@ jstatic.registerGenerator("myGenerator", function(iter, params, flow, depends) {
 
 ```
 
+## Change Log
+
+* `v2.2.0` - 14th Sep, 2013
+    + pageBy functinality added to paginator
+    + Added stash. A way to bring jstatic results into other Grunt tasks
+    + Sorting in sequencer
+    + Added link template in permalink generator
+    + Added passThru generator
+    
 [1]: http://gruntjs.com/configuring-tasks#files-array-format
 [2]: http://paularmstrong.github.io/swig/docs/#api-init
 [3]: https://github.com/chjj/marked
