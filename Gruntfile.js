@@ -153,7 +153,7 @@ module.exports = function(grunt) {
                         "yafm",
                         {
                             type: "permalink",
-                            func: function(entry, prefix, pathElems, outExt) {
+                            link: function(entry, prefix, pathElems, outExt) {
                                 return prefix + pathElems.slice(0,-1).join("/") + entry.basename + entry.variable + outExt;
                             }
                         },
