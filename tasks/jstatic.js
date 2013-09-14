@@ -17,7 +17,7 @@ module.exports = function(grunt) {
         linkPathStrip: 1
     });
 
-    var task = new jstatic.Task(this.files, options);
+    var task = new jstatic.Task(this.files, options, grunt.config);
     task.run();
   });
 };
